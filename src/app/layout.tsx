@@ -15,6 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MalomoKopi",
   description: "Point of Sale system for MalomoKopi",
+  icons: {
+    icon: "/logomk.png",
+    apple: "/logomk.png",
+  },
 };
 
 import { ThemeProvider } from "@/components/theme-provider"
