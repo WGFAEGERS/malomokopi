@@ -133,7 +133,7 @@ export function MenuItemForm({ categories, menuItem }: Props) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="item-price">Price ($)</Label>
+            <Label htmlFor="item-price">Price (Rp)</Label>
             <Input
               id="item-price"
               type="number"

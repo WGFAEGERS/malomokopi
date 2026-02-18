@@ -14,13 +14,13 @@ export function CategoryTabs({
   onSelectCategory,
 }: Props) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
       <button
         onClick={() => onSelectCategory(null)}
         className={cn(
-          "rounded-full px-4 py-1.5 text-sm font-medium transition-all",
+          "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200",
           selectedCategory === null
-            ? "bg-primary text-primary-foreground shadow-sm"
+            ? "gradient-primary text-white shadow-md"
             : "bg-secondary text-secondary-foreground hover:bg-accent"
         )}
       >
@@ -31,9 +31,9 @@ export function CategoryTabs({
           key={cat.id}
           onClick={() => onSelectCategory(cat.id)}
           className={cn(
-            "rounded-full px-4 py-1.5 text-sm font-medium transition-all",
+            "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200",
             selectedCategory === cat.id
-              ? "bg-primary text-primary-foreground shadow-sm"
+              ? "gradient-primary text-white shadow-md"
               : "bg-secondary text-secondary-foreground hover:bg-accent"
           )}
         >

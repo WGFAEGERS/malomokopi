@@ -17,20 +17,22 @@ const navItems = [
   { href: "/orders", label: "Orders", icon: ClipboardList },
 ];
 
-export function Sidebar() {
+export function SidebarContent() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground">
+    <>
+      {/* Logo */}
       <div className="flex h-16 items-center gap-3 px-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-primary/20">
-          <Coffee className="h-5 w-5 text-sidebar-primary" />
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-warm shadow-md">
+          <Coffee className="h-5 w-5 text-white" />
         </div>
         <Link href="/" className="font-bold text-lg tracking-tight">
-          Cafe POS
+          MalomoKopi
         </Link>
       </div>
 
+      {/* Navigation */}
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navItems.map((item) => {
           const isActive =
@@ -42,9 +44,9 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                  ? "gradient-gold text-sidebar-primary-foreground shadow-md"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               )}
             >
@@ -55,12 +57,21 @@ export function Sidebar() {
         })}
       </nav>
 
+      {/* Footer */}
       <div className="border-t border-sidebar-border px-3 py-4">
-        <div className="rounded-lg bg-sidebar-accent/50 px-3 py-3">
-          <p className="text-xs font-medium text-sidebar-foreground/50">Cafe POS v1.0</p>
+        <div className="rounded-xl bg-sidebar-accent/50 px-3 py-3">
+          <p className="text-xs font-medium text-sidebar-foreground/50">MalomoKopi v1.0</p>
           <p className="text-xs text-sidebar-foreground/30 mt-0.5">Powered by Next.js</p>
         </div>
       </div>
+    </>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden md:flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground">
+      <SidebarContent />
     </aside>
   );
 }

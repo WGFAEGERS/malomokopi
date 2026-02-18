@@ -9,11 +9,11 @@ export default async function MenuPage() {
   ]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Menu Management</h1>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Menu Management</h1>
         <p className="text-muted-foreground mt-1">
-          Manage your cafe menu categories and items.
+          Manage your MalomoKopi menu categories and items.
         </p>
       </div>
       <MenuManagement

@@ -13,7 +13,7 @@ type ReceiptData = {
 };
 
 function formatCents(cents: number): string {
-  return (cents / 100).toFixed(2);
+  return new Intl.NumberFormat("id-ID").format(cents / 100);
 }
 
 export function printReceipt(data: ReceiptData) {
@@ -22,7 +22,7 @@ export function printReceipt(data: ReceiptData) {
       (item) => `
       <tr>
         <td style="padding:4px 0;text-align:left;">${item.quantity}x ${item.name}</td>
-        <td style="padding:4px 0;text-align:right;">$${formatCents(item.subtotal)}</td>
+        <td style="padding:4px 0;text-align:right;">Rp${formatCents(item.subtotal)}</td>
       </tr>`
     )
     .join("");
@@ -72,8 +72,8 @@ export function printReceipt(data: ReceiptData) {
 </head>
 <body>
   <div class="header">
-    <h1>CAFE POS</h1>
-    <p>Thank you for your order!</p>
+    <h1>MALOMOKOPI</h1>
+    <p>Terima kasih atas pesanan Anda!</p>
   </div>
 
   <hr class="divider" />
@@ -88,7 +88,7 @@ export function printReceipt(data: ReceiptData) {
       ${itemRows}
       <tr class="total-row">
         <td style="text-align:left;">TOTAL</td>
-        <td style="text-align:right;">$${formatCents(data.total)}</td>
+        <td style="text-align:right;">Rp${formatCents(data.total)}</td>
       </tr>
     </tbody>
   </table>
@@ -96,8 +96,8 @@ export function printReceipt(data: ReceiptData) {
   <hr class="divider" />
 
   <div class="footer">
-    <p>Thank you for visiting!</p>
-    <p>Please come again</p>
+    <p>Terima kasih sudah berkunjung!</p>
+    <p>Sampai jumpa lagi ☕</p>
   </div>
 </body>
 </html>`;

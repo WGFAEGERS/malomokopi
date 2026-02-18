@@ -108,53 +108,55 @@ export function MenuManagement({ categories, menuItems }: Props) {
           </p>
         ) : (
           <div className="rounded-xl border-0 shadow-sm bg-card overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Available</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {menuItems.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">
-                        {item.category?.name ?? "—"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatPrice(item.price)}</TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={item.available}
-                        onCheckedChange={(checked) =>
-                          handleToggleAvailability(item.id, checked)
-                        }
-                      />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <MenuItemForm
-                          categories={categories}
-                          menuItem={item}
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteItem(item.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Available</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {menuItems.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">{item.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {item.category?.name ?? "—"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{formatPrice(item.price)}</TableCell>
+                      <TableCell>
+                        <Switch
+                          checked={item.available}
+                          onCheckedChange={(checked) =>
+                            handleToggleAvailability(item.id, checked)
+                          }
+                        />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <MenuItemForm
+                            categories={categories}
+                            menuItem={item}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteItem(item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         )}
       </div>

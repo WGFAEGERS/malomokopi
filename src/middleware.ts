@@ -6,6 +6,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAuthPage = ["/login", "/register"].includes(pathname);
+  const isPublicPage = pathname.startsWith("/order");
   const isApiRoute = pathname.startsWith("/api");
   const isStaticAsset =
     pathname.startsWith("/_next") || pathname.includes(".");
@@ -14,7 +15,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!sessionCookie && !isAuthPage && !isApiRoute && !isStaticAsset) {
+  if (!sessionCookie && !isAuthPage && !isPublicPage && !isApiRoute && !isStaticAsset) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

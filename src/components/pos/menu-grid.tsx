@@ -26,34 +26,34 @@ export function MenuGrid({ items, onAddToCart }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4">
       {items.map((item) => (
         <Card
           key={item.id}
-          className="group cursor-pointer border-0 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
+          className="group cursor-pointer border-0 shadow-sm card-hover active:scale-[0.97]"
           onClick={() => onAddToCart(item)}
         >
-          <CardContent className="relative p-4">
+          <CardContent className="relative p-3 sm:p-4">
             {item.imageUrl && (
               <img
                 src={item.imageUrl}
                 alt={item.name}
-                className="mb-3 h-24 w-full rounded-lg object-cover"
+                className="mb-2 sm:mb-3 h-20 sm:h-24 w-full rounded-xl object-cover"
               />
             )}
             {!item.imageUrl && (
-              <div className="mb-3 flex h-24 w-full items-center justify-center rounded-lg bg-gradient-to-br from-primary/5 to-primary/10">
-                <span className="text-2xl">
+              <div className="mb-2 sm:mb-3 flex h-20 sm:h-24 w-full items-center justify-center rounded-xl gradient-warm/10 bg-gradient-to-br from-primary/5 to-primary/10">
+                <span className="text-2xl font-bold text-primary/40">
                   {item.name.charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
-            <p className="text-sm font-semibold leading-tight">{item.name}</p>
-            <p className="mt-1 text-sm font-medium text-primary">
+            <p className="text-xs sm:text-sm font-semibold leading-tight truncate">{item.name}</p>
+            <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm font-medium text-primary">
               {formatPrice(item.price)}
             </p>
-            <div className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-              <Plus className="h-4 w-4" />
+            <div className="absolute right-2 top-2 sm:right-3 sm:top-3 flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full gradient-primary text-white opacity-0 shadow-sm transition-all duration-200 group-hover:opacity-100 group-hover:scale-110">
+              <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
             </div>
           </CardContent>
         </Card>

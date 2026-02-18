@@ -42,7 +42,7 @@ export default function RegisterPage() {
       <div className="space-y-2 lg:hidden text-center">
         <div className="flex items-center justify-center gap-2 text-primary">
           <Coffee className="h-6 w-6" />
-          <span className="text-xl font-bold">Cafe POS</span>
+          <span className="text-xl font-bold">MalomoKopi</span>
         </div>
       </div>
 

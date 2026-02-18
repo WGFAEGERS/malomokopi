@@ -26,10 +26,12 @@ export function Cart({
   );
 
   return (
-    <div className="flex h-full flex-col rounded-xl border-0 bg-card shadow-sm">
-      <div className="flex items-center justify-between border-b px-5 py-4">
+    <div className="flex h-full flex-col rounded-2xl border-0 bg-card shadow-sm">
+      <div className="flex items-center justify-between border-b px-4 sm:px-5 py-4">
         <div className="flex items-center gap-2">
-          <ShoppingBag className="h-4 w-4 text-primary" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-warm">
+            <ShoppingBag className="h-3.5 w-3.5 text-white" />
+          </div>
           <h2 className="font-semibold">Current Order</h2>
         </div>
         {items.length > 0 && (
@@ -42,18 +44,18 @@ export function Cart({
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4">
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
             <ShoppingBag className="h-10 w-10 mb-3 opacity-20" />
             <p className="text-sm">Tap items to add to order</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {items.map((item) => (
               <div
                 key={item.menuItemId}
-                className="flex items-center gap-3 rounded-lg bg-muted/50 p-3"
+                className="flex items-center gap-2 sm:gap-3 rounded-xl bg-muted/50 p-2.5 sm:p-3 transition-all duration-200"
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{item.name}</p>
@@ -66,7 +68,7 @@ export function Cart({
                     onClick={() =>
                       onUpdateQuantity(item.menuItemId, item.quantity - 1)
                     }
-                    className="flex h-7 w-7 items-center justify-center rounded-md border bg-background text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border bg-background text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {item.quantity === 1 ? (
                       <Trash2 className="h-3 w-3" />
@@ -81,7 +83,7 @@ export function Cart({
                     onClick={() =>
                       onUpdateQuantity(item.menuItemId, item.quantity + 1)
                     }
-                    className="flex h-7 w-7 items-center justify-center rounded-md border bg-background text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border bg-background text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Plus className="h-3 w-3" />
                   </button>
@@ -95,18 +97,18 @@ export function Cart({
         )}
       </div>
 
-      <div className="border-t bg-muted/30 p-5 space-y-4 rounded-b-xl">
+      <div className="border-t bg-muted/30 p-4 sm:p-5 space-y-3 sm:space-y-4 rounded-b-2xl">
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Total</span>
-          <span className="text-2xl font-bold tracking-tight">{formatPrice(total)}</span>
+          <span className="text-xl sm:text-2xl font-bold tracking-tight">{formatPrice(total)}</span>
         </div>
         <Button
-          className="w-full h-12 text-sm font-semibold shadow-sm"
+          className="w-full h-11 sm:h-12 text-sm font-semibold shadow-sm gradient-primary hover:opacity-90 transition-opacity text-white"
           size="lg"
           onClick={onPlaceOrder}
           disabled={items.length === 0 || isSubmitting}
         >
-          {isSubmitting ? "Placing Order..." : `Place Order \u2014 ${formatPrice(total)}`}
+          {isSubmitting ? "Placing Order..." : `Place Order — ${formatPrice(total)}`}
         </Button>
       </div>
     </div>

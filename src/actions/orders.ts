@@ -42,6 +42,7 @@ export async function createOrder(items: CartItem[]) {
 
   revalidatePath("/orders");
   revalidatePath("/pos");
+  revalidatePath("/order");
   revalidatePath("/");
 
   return { orderNumber: order.orderNumber, orderId: order.id };
