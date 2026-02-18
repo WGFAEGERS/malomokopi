@@ -12,7 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { LogOut, User, Menu, Coffee } from "lucide-react";
+import { LogOut, User, Menu } from "lucide-react";
+import Image from "next/image";
 import { SidebarContent } from "./sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
@@ -46,9 +47,13 @@ export function Header() {
           </SheetContent>
         </Sheet>
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-warm text-white">
-            <Coffee className="h-4 w-4" />
-          </div>
+          <Image
+            src="/logomk.png"
+            alt="MalomoKopi"
+            width={28}
+            height={28}
+            className="rounded-lg"
+          />
           <span className="font-bold text-sm tracking-tight">MalomoKopi</span>
         </div>
       </div>

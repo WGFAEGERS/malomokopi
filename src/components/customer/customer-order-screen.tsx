@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { createOrder, type CartItem } from "@/actions/orders";
 import { formatPrice } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -144,6 +145,13 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
                         <Sparkles className="h-4 w-4 text-amber-400" />
                         <span className="text-xs font-bold text-amber-100 tracking-wide uppercase">Premium Coffee Experience</span>
                     </div>
+                    <Image
+                        src="/logomk.png"
+                        alt="MalomoKopi"
+                        width={100}
+                        height={100}
+                        className="mx-auto mb-4 drop-shadow-lg rounded-2xl"
+                    />
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4 drop-shadow-lg">
                         Malomo<span className="text-amber-500">Kopi</span>
                     </h1>

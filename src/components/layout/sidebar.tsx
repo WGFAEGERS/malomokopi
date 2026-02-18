@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -24,9 +25,13 @@ export function SidebarContent() {
     <>
       {/* Logo */}
       <div className="flex h-16 items-center gap-3 px-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-warm shadow-md">
-          <Coffee className="h-5 w-5 text-white" />
-        </div>
+        <Image
+          src="/logomk.png"
+          alt="MalomoKopi"
+          width={36}
+          height={36}
+          className="rounded-lg shadow-md"
+        />
         <Link href="/" className="font-bold text-lg tracking-tight">
           MalomoKopi
         </Link>
