@@ -20,6 +20,7 @@ export async function createCategory(data: { name: string }) {
   await db.insert(categories).values({ name: parsed.data.name });
   revalidatePath("/menu");
   revalidatePath("/pos");
+  revalidatePath("/order");
   return { success: true };
 }
 
@@ -34,6 +35,7 @@ export async function updateCategory(id: number, data: { name: string }) {
     .where(eq(categories.id, id));
   revalidatePath("/menu");
   revalidatePath("/pos");
+  revalidatePath("/order");
   return { success: true };
 }
 
@@ -41,5 +43,6 @@ export async function deleteCategory(id: number) {
   await db.delete(categories).where(eq(categories.id, id));
   revalidatePath("/menu");
   revalidatePath("/pos");
+  revalidatePath("/order");
   return { success: true };
 }

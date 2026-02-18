@@ -28,6 +28,7 @@ export async function createMenuItem(data: {
   });
   revalidatePath("/menu");
   revalidatePath("/pos");
+  revalidatePath("/order");
   return { success: true };
 }
 
@@ -47,6 +48,7 @@ export async function updateMenuItem(
     .where(eq(menuItems.id, id));
   revalidatePath("/menu");
   revalidatePath("/pos");
+  revalidatePath("/order");
   return { success: true };
 }
 
@@ -54,6 +56,7 @@ export async function deleteMenuItem(id: number) {
   await db.delete(menuItems).where(eq(menuItems.id, id));
   revalidatePath("/menu");
   revalidatePath("/pos");
+  revalidatePath("/order");
   return { success: true };
 }
 
@@ -67,5 +70,6 @@ export async function toggleMenuItemAvailability(
     .where(eq(menuItems.id, id));
   revalidatePath("/menu");
   revalidatePath("/pos");
+  revalidatePath("/order");
   return { success: true };
 }
