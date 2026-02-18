@@ -1,7 +1,16 @@
-import { drizzle } from "drizzle-orm/libsql";
+import { config } from "dotenv";
+config({ path: ".env.local" });
+
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { categories, menuItems } from "./schema";
 
-const db = drizzle({ connection: { url: "file:local.db" } });
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not defined in .env.local");
+}
+
+const queryClient = postgres(process.env.DATABASE_URL);
+const db = drizzle(queryClient);
 
 const seedCategories = [
   { name: "Coffee" },
@@ -40,13 +49,19 @@ const seedProducts = [
 ];
 
 async function seed() {
-  console.log("Seeding categories...");
-  await db.insert(categories).values(seedCategories);
+  try {
+    console.log("Seeding categories...");
+    await db.insert(categories).values(seedCategories);
 
-  console.log("Seeding 20 products...");
-  await db.insert(menuItems).values(seedProducts);
+    console.log("Seeding 20 products...");
+    await db.insert(menuItems).values(seedProducts);
 
-  console.log("Done! Inserted 5 categories and 20 products.");
+    console.log("Done! Inserted 5 categories and 20 products.");
+  } catch (error) {
+    console.error("Error during seeding:", error);
+  } finally {
+    await queryClient.end();
+  }
 }
 
-seed().catch(console.error);
+seed();
