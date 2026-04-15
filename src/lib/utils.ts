@@ -55,3 +55,28 @@ export function calculateChangeGreedy(
 
   return breakdown;
 }
+
+export interface MenuItemLight {
+  id: number;
+  name: string;
+  price: number;
+  categoryId: number;
+  imageUrl: string | null;
+}
+
+/**
+ * Returns all menu items whose price is within the given budget,
+ * sorted from highest to lowest price (Greedy: best value first).
+ * @param budgetCents Budget in the same unit as item.price (cents)
+ * @param menuItems   Array of available menu items
+ */
+export function recommendMenuGreedy(
+  budgetCents: number,
+  menuItems: MenuItemLight[]
+): MenuItemLight[] {
+  // Greedy Preparation: sort highest price first
+  const sorted = [...menuItems].sort((a, b) => b.price - a.price);
+
+  // Greedy Choice: include every item whose price fits within the budget
+  return sorted.filter((item) => item.price <= budgetCents);
+}

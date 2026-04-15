@@ -12,29 +12,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatPrice, calculateChangeGreedy } from "@/lib/utils";
-import { Banknote, Coins, Calculator, CheckCircle2 } from "lucide-react";
+import { Banknote, Calculator, CheckCircle2 } from "lucide-react";
 
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  total: number;
+  total: number; // in cents (same unit as DB price, e.g. Rp 6.000 = 600000)
   onConfirm: () => void;
   isSubmitting: boolean;
 };
 
-// Units based on the project's scale (Price/100)
-// e.g. 100,000 IDR is stored as 1000 units
-const IDR_DENOMINATIONS_UNITS = [
-  1000, // 100k
-  500,  // 50k
-  200,  // 20k
-  100,  // 10k
-  50,   // 5k
-  20,   // 2k
-  10,   // 1k
-  5,    // 500
-  2,    // 200
-  1,    // 100
+// Denominations in cents (same as DB price unit)
+// Rp 100.000 = 10_000_000 cents, Rp 1.000 = 100_000 cents
+const IDR_DENOMINATIONS_CENTS = [
+  10000000, // Rp 100.000
+  5000000,  // Rp  50.000
+  2000000,  // Rp  20.000
+  1000000,  // Rp  10.000
+   500000,  // Rp   5.000
+   200000,  // Rp   2.000
+   100000,  // Rp   1.000
+    50000,  // Rp     500
+    20000,  // Rp     200
+    10000,  // Rp     100
 ];
 
 export function PaymentDialog({
@@ -45,19 +45,19 @@ export function PaymentDialog({
   isSubmitting,
 }: Props) {
   const [amountPaid, setAmountPaid] = useState<string>("");
-  
-  const amountPaidNumber = parseFloat(amountPaid) || 0;
-  // Convert physical IDR input to stored units (e.g. 50000 input -> 500 units)
-  const amountPaidUnits = amountPaidNumber / 100;
-  
-  const changeUnits = Math.max(0, amountPaidUnits - total);
-  
-  const changeBreakdown = useMemo(() => {
-    if (amountPaidUnits <= total) return [];
-    return calculateChangeGreedy(amountPaidUnits, total, IDR_DENOMINATIONS_UNITS);
-  }, [amountPaidUnits, total]);
 
-  const isValid = amountPaidUnits >= total && amountPaidUnits > 0;
+  const amountPaidNumber = parseFloat(amountPaid) || 0;
+  // User types IDR (e.g. 50000) → convert to cents (* 100) to match DB price unit
+  const amountPaidCents = amountPaidNumber * 100;
+
+  const changeCents = Math.max(0, amountPaidCents - total);
+
+  const changeBreakdown = useMemo(() => {
+    if (amountPaidCents <= total) return [];
+    return calculateChangeGreedy(amountPaidCents, total, IDR_DENOMINATIONS_CENTS);
+  }, [amountPaidCents, total]);
+
+  const isValid = amountPaidCents >= total && amountPaidCents > 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -68,20 +68,20 @@ export function PaymentDialog({
             Payment
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="p-6 space-y-6">
           <div className="bg-muted/30 rounded-2xl p-5 border border-border/50">
             <div className="flex justify-between items-center mb-1">
               <span className="text-sm font-medium text-muted-foreground">Total Bill</span>
               <span className="text-2xl font-bold tracking-tight text-foreground">
-                {formatPrice(total * 100)} {/* Convert units back to "cents" for formatPrice */}
+                {formatPrice(total)}
               </span>
             </div>
-            {amountPaidUnits > total && (
+            {amountPaidCents > total && (
               <div className="flex justify-between items-center mt-3 pt-3 border-t border-border/50">
                 <span className="text-sm font-medium text-primary">Change to Give</span>
                 <span className="text-xl font-bold text-primary">
-                  {formatPrice(changeUnits * 100)}
+                  {formatPrice(changeCents)}
                 </span>
               </div>
             )}
@@ -110,7 +110,7 @@ export function PaymentDialog({
                   onClick={() => setAmountPaid(quickAmount.toString())}
                   className="px-3 py-1.5 text-xs font-semibold rounded-lg border bg-background hover:bg-muted transition-colors active:scale-95"
                 >
-                  +{quickAmount.toLocaleString()}
+                  +{quickAmount.toLocaleString("id-ID")}
                 </button>
               ))}
             </div>
@@ -124,12 +124,12 @@ export function PaymentDialog({
               </Label>
               <div className="grid grid-cols-2 gap-2">
                 {changeBreakdown.map((item) => (
-                  <div 
-                    key={item.denomination} 
+                  <div
+                    key={item.denomination}
                     className="flex items-center justify-between p-3 rounded-xl bg-primary/5 border border-primary/10 transition-all hover:bg-primary/10"
                   >
                     <span className="text-sm font-medium">
-                      {formatPrice(item.denomination * 100)}
+                      {formatPrice(item.denomination)}
                     </span>
                     <span className="bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                       x{item.count}

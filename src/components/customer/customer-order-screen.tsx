@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { createOrder, type CartItem, type CustomerInfo } from "@/actions/orders";
-import { formatPrice } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { formatPrice, cn, type MenuItemLight } from "@/lib/utils";
 import { CheckoutDialog } from "./checkout-dialog";
+import { BudgetRecommendationDialog } from "@/components/pos/budget-recommendation-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -47,6 +47,7 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
     const [cartOpen, setCartOpen] = useState(false);
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState<string | null>(null);
+    const [isRecommendationOpen, setIsRecommendationOpen] = useState(false);
 
     const filteredItems = selectedCategory
         ? menuItems.filter((item) => item.categoryId === selectedCategory)
@@ -93,6 +94,20 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
         setCartOpen(false);
         setCheckoutOpen(true);
     }
+
+    function handleAcceptRecommendation(items: MenuItemLight[]) {
+        items.forEach((item) => addToCart({ ...item, category: "" }));
+        toast.success(`${items.length} menu ditambahkan ke keranjang! 🎉`);
+    }
+
+    // Convert menuItems to MenuItemLight format (price in cents, same as MenuItemLight)
+    const menuItemsForGreedy: MenuItemLight[] = menuItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        categoryId: item.categoryId,
+        imageUrl: item.imageUrl,
+    }));
 
     async function handleCheckoutConfirm(customerInfo: CustomerInfo) {
         setIsSubmitting(true);
@@ -170,6 +185,26 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
 
             {/* Menu Section */}
             <section className="mx-auto max-w-6xl px-4 sm:px-6 -mt-8 relative z-20">
+                {/* Budget Recommendation Banner */}
+                <div className="mb-6 p-4 rounded-2xl bg-card/90 backdrop-blur-md border border-amber-500/20 shadow-lg flex flex-col sm:flex-row items-center gap-3 justify-between">
+                    <div className="flex items-center gap-3 text-left">
+                        <div className="h-10 w-10 bg-amber-500/10 rounded-xl flex items-center justify-center shrink-0">
+                            <Sparkles className="h-5 w-5 text-amber-500" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-foreground">Bingung Mau Pesan Apa?</p>
+                            <p className="text-xs text-muted-foreground">Masukkan budget kamu, kami rekomendasikan menu terbaik!</p>
+                        </div>
+                    </div>
+                    <Button
+                        onClick={() => setIsRecommendationOpen(true)}
+                        className="w-full sm:w-auto shrink-0 gap-2 rounded-xl font-bold bg-amber-500 hover:bg-amber-500/90 text-white shadow-md"
+                    >
+                        <Sparkles className="h-4 w-4" />
+                        Rekomendasi Budget
+                    </Button>
+                </div>
+
                 {/* Category tabs */}
                 <div className="bg-card/80 backdrop-blur-md rounded-2xl shadow-lg border border-border p-2 mb-8 flex gap-2 overflow-x-auto scrollbar-none sticky top-20 z-30 transition-all duration-300">
                     <button
@@ -389,6 +424,13 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
                 total={cartTotal}
                 onConfirm={handleCheckoutConfirm}
                 isSubmitting={isSubmitting}
+            />
+
+            <BudgetRecommendationDialog
+                open={isRecommendationOpen}
+                onOpenChange={setIsRecommendationOpen}
+                menuItems={menuItemsForGreedy}
+                onAcceptRecommendation={handleAcceptRecommendation}
             />
         </div>
     );

@@ -11,7 +11,9 @@ import { toast } from "sonner";
 import { printReceipt } from "@/lib/print-receipt";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Sparkles } from "lucide-react";
+import { BudgetRecommendationDialog } from "./budget-recommendation-dialog";
+import type { MenuItemLight } from "@/lib/utils";
 
 type Props = {
   categories: Array<{ id: number; name: string }>;
@@ -30,6 +32,7 @@ export function POSScreen({ categories, menuItems }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isRecommendationOpen, setIsRecommendationOpen] = useState(false);
   const router = useRouter();
 
   const filteredItems = selectedCategory
@@ -114,15 +117,41 @@ export function POSScreen({ categories, menuItems }: Props) {
     }
   }
 
+  function handleAcceptRecommendation(items: MenuItemLight[]) {
+    items.forEach(item => addToCart({ id: item.id, name: item.name, price: item.price }));
+  }
+
   return (
     <div className="flex h-[calc(100vh-5rem)] md:h-[calc(100vh-8rem)] gap-4 md:gap-6 animate-fade-in">
       {/* Left Panel - Menu */}
       <div className="flex flex-1 flex-col space-y-3 md:space-y-4 overflow-hidden">
-        <CategoryTabs
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          <div className="flex-1">
+            <CategoryTabs
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => setIsRecommendationOpen(true)}
+            className="hidden md:flex shrink-0 gap-2 border-primary/20 text-primary hover:bg-primary/10 rounded-xl"
+          >
+            <Sparkles className="h-4 w-4 fill-primary/20" />
+            Budget Rekomen
+          </Button>
+        </div>
+        <div className="md:hidden">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsRecommendationOpen(true)}
+              className="w-full gap-2 border-primary/20 text-primary hover:bg-primary/10 rounded-xl shadow-sm bg-primary/5"
+            >
+              <Sparkles className="h-4 w-4 fill-primary/20" />
+              Rekomendasi Berdasarkan Budget
+            </Button>
+        </div>
         <div className="flex-1 overflow-y-auto">
           <MenuGrid items={filteredItems} onAddToCart={addToCart} />
         </div>
@@ -176,6 +205,13 @@ export function POSScreen({ categories, menuItems }: Props) {
         total={cartTotal}
         onConfirm={handleFinalizeOrder}
         isSubmitting={isSubmitting}
+      />
+      
+      <BudgetRecommendationDialog
+        open={isRecommendationOpen}
+        onOpenChange={setIsRecommendationOpen}
+        menuItems={menuItems}
+        onAcceptRecommendation={handleAcceptRecommendation}
       />
     </div>
   );
