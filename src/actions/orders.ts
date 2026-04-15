@@ -13,7 +13,14 @@ export type CartItem = {
   quantity: number;
 };
 
-export async function createOrder(items: CartItem[]) {
+export type CustomerInfo = {
+  customerName: string;
+  customerPhone: string;
+  tableNumber: string;
+  paymentProofUrl: string;
+};
+
+export async function createOrder(items: CartItem[], customerInfo?: CustomerInfo) {
   const total = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -25,8 +32,12 @@ export async function createOrder(items: CartItem[]) {
     .insert(orders)
     .values({
       orderNumber,
-      status: "pending",
+      status: customerInfo ? "awaiting_verification" : "pending",
       total,
+      customerName: customerInfo?.customerName ?? null,
+      customerPhone: customerInfo?.customerPhone ?? null,
+      tableNumber: customerInfo?.tableNumber ?? null,
+      paymentProofUrl: customerInfo?.paymentProofUrl ?? null,
     })
     .returning();
 
@@ -50,7 +61,7 @@ export async function createOrder(items: CartItem[]) {
 
 export async function updateOrderStatus(
   orderId: number,
-  status: "pending" | "preparing" | "completed" | "cancelled"
+  status: "pending" | "awaiting_verification" | "preparing" | "completed" | "cancelled"
 ) {
   await db
     .update(orders)

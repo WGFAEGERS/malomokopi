@@ -20,3 +20,38 @@ export function generateOrderNumber(): string {
   const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `ORD-${datePart}-${randomPart}`;
 }
+
+export interface ChangeBreakdown {
+  denomination: number;
+  count: number;
+}
+
+/**
+ * Calculates the change breakdown using a greedy algorithm.
+ * @param amountPaid The amount given by the customer (in the same units as total)
+ * @param total The total cost of the order
+ * @param denominations Available bill/coin denominations (defaults to IDR units)
+ */
+export function calculateChangeGreedy(
+  amountPaid: number,
+  total: number,
+  denominations: number[] = [100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100]
+): ChangeBreakdown[] {
+  let change = amountPaid - total;
+  if (change <= 0) return [];
+
+  const breakdown: ChangeBreakdown[] = [];
+  
+  // Sort denominations descending just in case
+  const sortedDenoms = [...denominations].sort((a, b) => b - a);
+
+  for (const denom of sortedDenoms) {
+    if (change >= denom) {
+      const count = Math.floor(change / denom);
+      breakdown.push({ denomination: denom, count });
+      change %= denom;
+    }
+  }
+
+  return breakdown;
+}

@@ -5,6 +5,10 @@ const statusConfig = {
     label: "Pending",
     className: "bg-amber-500/10 text-amber-600 border-amber-200",
   },
+  awaiting_verification: {
+    label: "Menunggu Verifikasi",
+    className: "bg-blue-500/10 text-blue-600 border-blue-200",
+  },
   preparing: {
     label: "Preparing",
     className: "bg-primary/10 text-primary border-primary/20",

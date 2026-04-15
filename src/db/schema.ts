@@ -5,7 +5,7 @@ import { relations } from "drizzle-orm";
 // Enums
 // ============================================================
 
-export const orderStatusEnum = pgEnum("order_status", ["pending", "preparing", "completed", "cancelled"]);
+export const orderStatusEnum = pgEnum("order_status", ["pending", "awaiting_verification", "preparing", "completed", "cancelled"]);
 
 // ============================================================
 // Better Auth Tables
@@ -97,6 +97,10 @@ export const orders = pgTable("orders", {
     .notNull()
     .default("pending"),
   total: integer("total").notNull(),
+  customerName: text("customer_name"),
+  customerPhone: text("customer_phone"),
+  tableNumber: text("table_number"),
+  paymentProofUrl: text("payment_proof_url"),
   createdAt: timestamp("created_at")
     .notNull()
     .defaultNow(),

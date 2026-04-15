@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CategoryTabs } from "./category-tabs";
 import { MenuGrid } from "./menu-grid";
 import { Cart } from "./cart";
+import { PaymentDialog } from "./payment-dialog";
 import { createOrder, type CartItem } from "@/actions/orders";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -28,6 +29,7 @@ export function POSScreen({ categories, menuItems }: Props) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const router = useRouter();
 
   const filteredItems = selectedCategory
@@ -75,8 +77,12 @@ export function POSScreen({ categories, menuItems }: Props) {
     setCart([]);
   }
 
-  async function handlePlaceOrder() {
+  function handlePlaceOrder() {
     if (cart.length === 0) return;
+    setIsPaymentOpen(true);
+  }
+
+  async function handleFinalizeOrder() {
     setIsSubmitting(true);
     const itemsSnapshot = [...cart];
     try {
@@ -84,6 +90,7 @@ export function POSScreen({ categories, menuItems }: Props) {
       toast.success(`Order ${result.orderNumber} placed!`);
       clearCart();
       setCartOpen(false);
+      setIsPaymentOpen(false);
       router.refresh();
 
       printReceipt({
@@ -162,6 +169,14 @@ export function POSScreen({ categories, menuItems }: Props) {
           </SheetContent>
         </Sheet>
       </div>
+
+      <PaymentDialog
+        open={isPaymentOpen}
+        onOpenChange={setIsPaymentOpen}
+        total={cartTotal}
+        onConfirm={handleFinalizeOrder}
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 }

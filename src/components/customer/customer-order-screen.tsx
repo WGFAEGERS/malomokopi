@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { createOrder, type CartItem } from "@/actions/orders";
+import { createOrder, type CartItem, type CustomerInfo } from "@/actions/orders";
 import { formatPrice } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { CheckoutDialog } from "./checkout-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -44,6 +45,7 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [cartOpen, setCartOpen] = useState(false);
+    const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState<string | null>(null);
 
     const filteredItems = selectedCategory
@@ -86,14 +88,19 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
         }
     }
 
-    async function handleCheckout() {
+    function handleCheckout() {
         if (cart.length === 0) return;
+        setCartOpen(false);
+        setCheckoutOpen(true);
+    }
+
+    async function handleCheckoutConfirm(customerInfo: CustomerInfo) {
         setIsSubmitting(true);
         try {
-            const result = await createOrder(cart);
+            const result = await createOrder(cart, customerInfo);
             setOrderSuccess(result.orderNumber);
             setCart([]);
-            setCartOpen(false);
+            setCheckoutOpen(false);
         } catch {
             toast.error("Gagal membuat pesanan. Silakan coba lagi.");
         } finally {
@@ -374,6 +381,15 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
                     </Sheet>
                 </div>
             )}
+
+            <CheckoutDialog
+                open={checkoutOpen}
+                onOpenChange={setCheckoutOpen}
+                items={cart}
+                total={cartTotal}
+                onConfirm={handleCheckoutConfirm}
+                isSubmitting={isSubmitting}
+            />
         </div>
     );
 }

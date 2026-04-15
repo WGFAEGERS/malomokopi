@@ -6,9 +6,13 @@ import { OrderCard } from "./order-card";
 type Order = {
   id: number;
   orderNumber: string;
-  status: "pending" | "preparing" | "completed" | "cancelled";
+  status: "pending" | "awaiting_verification" | "preparing" | "completed" | "cancelled";
   total: number;
   createdAt: Date;
+  customerName?: string | null;
+  customerPhone?: string | null;
+  tableNumber?: string | null;
+  paymentProofUrl?: string | null;
   orderItems: Array<{
     id: number;
     quantity: number;
@@ -19,6 +23,9 @@ type Order = {
 };
 
 export function OrderList({ orders }: { orders: Order[] }) {
+  const awaitingOrders = orders.filter(
+    (o) => o.status === "awaiting_verification"
+  );
   const activeOrders = orders.filter(
     (o) => o.status === "pending" || o.status === "preparing"
   );
@@ -26,8 +33,16 @@ export function OrderList({ orders }: { orders: Order[] }) {
   const cancelledOrders = orders.filter((o) => o.status === "cancelled");
 
   return (
-    <Tabs defaultValue="active">
+    <Tabs defaultValue="awaiting">
       <TabsList className="bg-secondary/80">
+        <TabsTrigger value="awaiting" className="relative">
+          Verifikasi
+          {awaitingOrders.length > 0 && (
+            <span className="ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white">
+              {awaitingOrders.length}
+            </span>
+          )}
+        </TabsTrigger>
         <TabsTrigger value="active">
           Active ({activeOrders.length})
         </TabsTrigger>
@@ -40,6 +55,12 @@ export function OrderList({ orders }: { orders: Order[] }) {
         <TabsTrigger value="all">All ({orders.length})</TabsTrigger>
       </TabsList>
 
+      <TabsContent value="awaiting" className="mt-6">
+        <OrderGrid
+          orders={awaitingOrders}
+          emptyText="Tidak ada pesanan menunggu verifikasi."
+        />
+      </TabsContent>
       <TabsContent value="active" className="mt-6">
         <OrderGrid orders={activeOrders} emptyText="No active orders." />
       </TabsContent>
