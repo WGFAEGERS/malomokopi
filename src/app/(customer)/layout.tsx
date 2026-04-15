@@ -47,7 +47,7 @@ export default function CustomerLayout({
                             <span className="text-sm font-semibold">MalomoKopi</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            © 2026 MalomoKopi. Freshly brewed with ☕
+                            © 2026 MalomoKopi. by M.Fauzan ☕
                         </p>
                     </div>
                 </div>
