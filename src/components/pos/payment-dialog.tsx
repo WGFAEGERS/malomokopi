@@ -91,20 +91,20 @@ export function PaymentDialog({
             <Label htmlFor="amount-paid" className="text-sm font-semibold">
               Amount Received (IDR)
             </Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold">Rp</span>
+            <div className="relative flex items-center">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-base select-none pointer-events-none">Rp</span>
               <Input
                 id="amount-paid"
                 type="text"
                 inputMode="numeric"
-                placeholder="Contoh: 50.000"
+                placeholder="50.000"
                 value={amountPaid}
                 onChange={(e) => {
                   const raw = e.target.value.replace(/\D/g, "");
                   setAmountPaid(raw ? parseInt(raw, 10).toLocaleString("id-ID") : "");
                 }}
                 autoFocus
-                className="pl-11 h-12 text-lg font-bold rounded-xl border-2 focus-visible:ring-primary/20"
+                className="pl-14 h-12 text-lg font-bold rounded-xl border-2 focus-visible:ring-primary/20"
               />
             </div>
             <div className="flex flex-wrap gap-2 pt-2">

@@ -130,19 +130,19 @@ export function BudgetRecommendationDialog({
             <Label htmlFor="budget" className="text-sm font-semibold">
               Budget Pelanggan (IDR)
             </Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold">
+            <div className="relative flex items-center">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-base select-none pointer-events-none">
                 Rp
               </span>
               <Input
                 id="budget"
                 type="text"
                 inputMode="numeric"
-                placeholder="Contoh: 30.000"
+                placeholder="30.000"
                 value={budget}
                 onChange={handleBudgetChange}
                 autoFocus
-                className="pl-11 h-12 text-lg font-bold rounded-xl border-2 focus-visible:ring-primary/20"
+                className="pl-14 pr-10 h-12 text-lg font-bold rounded-xl border-2 focus-visible:ring-primary/20"
               />
               {budget && (
                 <button
