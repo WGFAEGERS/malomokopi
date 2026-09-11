@@ -7,6 +7,7 @@ import { formatPrice, cn, type MenuItemLight } from "@/lib/utils";
 import { CheckoutDialog } from "./checkout-dialog";
 import { BudgetRecommendationDialog } from "@/components/pos/budget-recommendation-dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     Sheet,
@@ -23,6 +24,8 @@ import {
     CheckCircle2,
     ShoppingBag,
     Sparkles,
+    Search,
+    X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -42,6 +45,7 @@ type Props = {
 
 export function CustomerOrderScreen({ categories, menuItems }: Props) {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [cartOpen, setCartOpen] = useState(false);
@@ -49,9 +53,11 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
     const [orderSuccess, setOrderSuccess] = useState<string | null>(null);
     const [isRecommendationOpen, setIsRecommendationOpen] = useState(false);
 
-    const filteredItems = selectedCategory
-        ? menuItems.filter((item) => item.categoryId === selectedCategory)
-        : menuItems;
+    const filteredItems = menuItems.filter((item) => {
+        const matchesCategory = selectedCategory === null || item.categoryId === selectedCategory;
+        const matchesSearch = !searchQuery.trim() || item.name.toLowerCase().includes(searchQuery.toLowerCase().trim());
+        return matchesCategory && matchesSearch;
+    });
 
     const cartTotal = cart.reduce(
         (sum, item) => sum + item.price * item.quantity,
@@ -155,7 +161,7 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
 
     // ── Main screen ──
     return (
-        <div className="animate-fade-in min-h-screen bg-background pb-24 transition-colors duration-300">
+        <div className="animate-fade-in min-h-screen bg-background pb-24 transition-colors duration-300" suppressHydrationWarning>
             {/* Hero */}
             <section className="relative overflow-hidden bg-slate-900 py-12 sm:py-20 lg:py-24 transition-all duration-500">
                 {/* Background decorative elements */}
@@ -205,6 +211,27 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
                     </Button>
                 </div>
 
+                {/* Search Bar */}
+                <div className="relative mb-4">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                        type="text"
+                        placeholder="Cari menu favorit kamu..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-12 pr-10 h-12 text-sm sm:text-base rounded-2xl bg-card/90 backdrop-blur-md border border-border shadow-sm focus-visible:ring-primary/20"
+                    />
+                    {searchQuery && (
+                        <button
+                            type="button"
+                            onClick={() => setSearchQuery("")}
+                            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground rounded-full hover:bg-muted transition-colors"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    )}
+                </div>
+
                 {/* Category tabs */}
                 <div className="bg-card/80 backdrop-blur-md rounded-2xl shadow-lg border border-border p-2 mb-8 flex gap-2 overflow-x-auto scrollbar-none sticky top-20 z-30 transition-all duration-300">
                     <button
@@ -238,7 +265,21 @@ export function CustomerOrderScreen({ categories, menuItems }: Props) {
                 {filteredItems.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-card rounded-3xl border border-border shadow-sm">
                         <Coffee className="h-16 w-16 mb-4 text-muted/30" />
-                        <p className="text-lg font-medium text-muted-foreground/60">Belum ada menu di kategori ini</p>
+                        <p className="text-lg font-medium text-muted-foreground">
+                            {searchQuery
+                                ? `Tidak ada menu yang cocok dengan "${searchQuery}"`
+                                : "Belum ada menu di kategori ini"}
+                        </p>
+                        {searchQuery && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="mt-4 rounded-xl font-semibold"
+                                onClick={() => setSearchQuery("")}
+                            >
+                                Reset Pencarian
+                            </Button>
+                        )}
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">

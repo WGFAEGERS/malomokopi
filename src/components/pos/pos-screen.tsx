@@ -11,7 +11,8 @@ import { toast } from "sonner";
 import { printReceipt } from "@/lib/print-receipt";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ShoppingCart, Sparkles, Search, X } from "lucide-react";
 import { BudgetRecommendationDialog } from "./budget-recommendation-dialog";
 import type { MenuItemLight } from "@/lib/utils";
 
@@ -28,6 +29,7 @@ type Props = {
 
 export function POSScreen({ categories, menuItems }: Props) {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -35,9 +37,11 @@ export function POSScreen({ categories, menuItems }: Props) {
   const [isRecommendationOpen, setIsRecommendationOpen] = useState(false);
   const router = useRouter();
 
-  const filteredItems = selectedCategory
-    ? menuItems.filter((item) => item.categoryId === selectedCategory)
-    : menuItems;
+  const filteredItems = menuItems.filter((item) => {
+    const matchesCategory = selectedCategory === null || item.categoryId === selectedCategory;
+    const matchesSearch = !searchQuery.trim() || item.name.toLowerCase().includes(searchQuery.toLowerCase().trim());
+    return matchesCategory && matchesSearch;
+  });
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -151,6 +155,25 @@ export function POSScreen({ categories, menuItems }: Props) {
               <Sparkles className="h-4 w-4 fill-primary/20" />
               Rekomendasi Berdasarkan Budget
             </Button>
+        </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Cari menu POS..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-10 pl-9 pr-8 text-sm rounded-xl bg-card border-border"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
         <div className="flex-1 overflow-y-auto">
           <MenuGrid items={filteredItems} onAddToCart={addToCart} />

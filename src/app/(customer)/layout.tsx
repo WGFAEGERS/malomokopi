@@ -8,7 +8,7 @@ export default function CustomerLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+        <div className="min-h-screen bg-background text-foreground transition-colors duration-300" suppressHydrationWarning>
             {/* Header */}
             <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
                 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">

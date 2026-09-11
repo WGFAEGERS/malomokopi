@@ -46,9 +46,9 @@ export function PaymentDialog({
 }: Props) {
   const [amountPaid, setAmountPaid] = useState<string>("");
 
-  const amountPaidNumber = parseFloat(amountPaid) || 0;
+  const rawAmountPaid = parseInt(amountPaid.replace(/\D/g, ""), 10) || 0;
   // User types IDR (e.g. 50000) → convert to cents (* 100) to match DB price unit
-  const amountPaidCents = amountPaidNumber * 100;
+  const amountPaidCents = rawAmountPaid * 100;
 
   const changeCents = Math.max(0, amountPaidCents - total);
 
@@ -92,22 +92,27 @@ export function PaymentDialog({
               Amount Received (IDR)
             </Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">Rp</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold">Rp</span>
               <Input
                 id="amount-paid"
-                type="number"
-                placeholder="e.g. 50000"
+                type="text"
+                inputMode="numeric"
+                placeholder="Contoh: 50.000"
                 value={amountPaid}
-                onChange={(e) => setAmountPaid(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, "");
+                  setAmountPaid(raw ? parseInt(raw, 10).toLocaleString("id-ID") : "");
+                }}
                 autoFocus
-                className="pl-10 h-12 text-lg font-semibold rounded-xl border-2 focus-visible:ring-primary/20"
+                className="pl-11 h-12 text-lg font-bold rounded-xl border-2 focus-visible:ring-primary/20"
               />
             </div>
             <div className="flex flex-wrap gap-2 pt-2">
               {[10000, 20000, 50000, 100000].map((quickAmount) => (
                 <button
                   key={quickAmount}
-                  onClick={() => setAmountPaid(quickAmount.toString())}
+                  type="button"
+                  onClick={() => setAmountPaid(quickAmount.toLocaleString("id-ID"))}
                   className="px-3 py-1.5 text-xs font-semibold rounded-lg border bg-background hover:bg-muted transition-colors active:scale-95"
                 >
                   +{quickAmount.toLocaleString("id-ID")}
